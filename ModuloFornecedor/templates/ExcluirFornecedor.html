@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Excluir Fornecedor</title>
+</head>
+<body>
+
+<h2>Excluir Fornecedor</h2>
+
+<input type="number" id="id" placeholder="ID">
+<button onclick="buscar()">Buscar</button>
+
+<div id="info"></div>
+
+<button onclick="excluir()">Excluir</button>
+
+<p id="msg"></p>
+
+<script>
+let fornecedorAtual = null;
+
+function buscar() {
+    const id = document.getElementById("id").value;
+
+    fetch(`http://localhost:8080/fornecedores/${id}`)
+    .then(res => res.json())
+    .then(f => {
+        fornecedorAtual = f;
+
+        info.innerHTML = `
+            <p>${f.nome} - ${f.cnpj}</p>
+        `;
+    });
+}
+
+function excluir() {
+    if (!fornecedorAtual) return;
+
+    fetch(`http://localhost:8080/fornecedores/${fornecedorAtual.id}`, {
+        method: "DELETE"
+    })
+    .then(() => {
+        msg.innerText = "Excluído com sucesso!";
+        info.innerHTML = "";
+    });
+}
+</script>
+
+<script src="ExcluirFornecedor.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Fornecedor</title>
+</head>
+<body>
+
+<h2>Editar Fornecedor</h2>
+
+<form id="form">
+    <input type="text" id="nome" placeholder="Nome"><br><br>
+    <input type="text" id="cnpj" placeholder="CNPJ"><br><br>
+    <input type="text" id="telefone" placeholder="Telefone"><br><br>
+    <input type="text" id="endereco" placeholder="Endereço"><br><br>
+    <input type="text" id="cidade" placeholder="Cidade"><br><br>
+    <input type="text" id="produtoFornecidoA" placeholder="Produto Fornecido A"><br><br>
+    <input type="text" id="produtoFornecidoB" placeholder="Produto Fornecido B"><br><br>
+
+    <button type="submit">Salvar</button>
+</form>
+
+<p id="msg"></p>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+fetch(`http://localhost:8080/fornecedores/${id}`)
+.then(res => res.json())
+.then(f => {
+    nome.value = f.nome;
+    cnpj.value = f.cnpj;
+    telefone.value = f.telefone;
+    endereco.value = f.endereco;
+    cidade.value = f.cidade;
+    produtoFornecidoA.value = f.produtoFornecidoA;
+    produtoFornecidoB.value = f.produtoFornecidoB;
+});
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const fornecedor = {
+        nome: nome.value,
+        cnpj: cnpj.value,
+        telefone: telefone.value,
+        endereco: endereco.value,
+        cidade: cidade.value,
+        produtoFornecidoA: produtoFornecidoA.value,
+        produtoFornecidoB: produtoFornecidoB.value
+    };
+
+    fetch(`http://localhost:8080/fornecedores/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fornecedor)
+    })
+    .then(() => {
+        msg.innerText = "Atualizado com sucesso!";
+    });
+});
+</script>
+
+<script src="EditarFornecedor.js"></script>
+
+</body>
+</html>
