@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Excluir Cliente</title>
+</head>
+<body>
+
+<h2>Excluir Cliente</h2>
+
+<input type="number" id="id" placeholder="ID">
+<button onclick="buscar()">Buscar</button>
+
+<div id="info"></div>
+
+<button onclick="excluir()">Excluir</button>
+
+<p id="msg"></p>
+
+<script>
+let clienteAtual = null;
+
+function buscar() {
+    const id = document.getElementById("id").value;
+
+    fetch(`http://localhost:8080/clientes/${id}`)
+    .then(res => res.json())
+    .then(c => {
+        clienteAtual = c;
+
+        info.innerHTML = `
+            <p>${c.nome} - ${c.cpf}</p>
+        `;
+    });
+}
+
+function excluir() {
+    if (!clienteAtual) return;
+
+    fetch(`http://localhost:8080/clientes/${clienteAtual.id}`, {
+        method: "DELETE"
+    })
+    .then(() => {
+        msg.innerText = "Excluído com sucesso!";
+        info.innerHTML = "";
+    });
+}
+</script>
+
+<script src="ExcluirCliente.html"></script>
+
+</body>
+</html>

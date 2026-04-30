@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Pesquisar CLiente</title>
+</head>
+<body>
+
+<h2>Pesquisar Cliente</h2>
+
+<input type="text" id="busca" placeholder="Digite nome ou CPF">
+<button onclick="pesquisar()">Buscar</button>
+
+<h3>Resultados:</h3>
+<ul id="lista"></ul>
+
+<h3>Detalhes:</h3>
+<div id="detalhes"></div>
+
+<script>
+let clientes = [];
+
+function pesquisar() {
+    const termo = document.getElementById("busca").value.toLowerCase();
+
+    fetch("http://localhost:8080/clientes")
+    .then(res => res.json())
+    .then(data => {
+        clientes = data;
+
+        const filtrados = clientes.filter(c =>
+            c.nome.toLowerCase().includes(termo) ||
+            c.cpf.includes(termo)
+        );
+
+        const lista = document.getElementById("lista");
+        lista.innerHTML = "";
+
+        filtrados.forEach(c => {
+            const item = `<li onclick="mostrarDetalhes(${c.id})">
+                ${c.nome} - ${c.cpf}
+            </li>`;
+            lista.innerHTML += item;
+        });
+    });
+}
+
+function mostrarDetalhes(id) {
+    const c = clientes.find(c => c.id === id);
+
+    document.getElementById("detalhes").innerHTML = `
+        <p><b>Nome:</b> ${c.nome}</p>
+        <p><b>CPF:</b> ${c.cpf}</p>
+        <p><b>Telefone:</b> ${c.telefone}</p>
+        <p><b>Endereço:</b> ${c.endereco}</p>
+
+    `;
+}
+</script>
+
+<script src="PesquisarCliente.html"></script>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Cliente</title>
+</head>
+<body>
+
+<h2>Editar Cliente</h2>
+
+<form id="form">
+    <input type="text" id="nome" placeholder="Nome"><br><br>
+    <input type="text" id="cpf" placeholder="CPF"><br><br>
+    <input type="text" id="telefone" placeholder="Telefone"><br><br>
+    <input type="text" id="endereco" placeholder="Endereço"><br><br>
+
+    <button type="submit">Salvar</button>
+</form>
+
+<p id="msg"></p>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+fetch(`http://localhost:8080/clientes/${id}`)
+.then(res => res.json())
+.then(c => {
+    nome.value = c.nome;
+    cpf.value = c.cpf;
+    telefone.value = c.telefone;
+    endereco.value = c.endereco;
+});
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const fornecedor = {
+        nome: nome.value,
+        cpf: cpf.value,
+        telefone: telefone.value,
+        endereco: endereco.value,
+    };
+
+    fetch(`http://localhost:8080/clientes/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cliente)
+    })
+    .then(() => {
+        msg.innerText = "Atualizado com sucesso!";
+    });
+});
+</script>
+
+<script src="EditarCliente.html"></script>
+
+</body>
+</html>
