@@ -18,21 +18,29 @@ function pesquisar() {
 
         filtrados.forEach(c => {
             const li = document.createElement("li");
+            li.className = "list-group-item";
             li.textContent = `${c.nome} - ${c.cpf}`;
             li.onclick = () => mostrarDetalhes(c.id);
+
             lista.appendChild(li);
         });
     });
 }
 
 function mostrarDetalhes(id) {
-    const f = clientes.find(c => c.id === id);
+    const c = clientes.find(c => c.id == id);
+
+    if (!c) {
+        document.getElementById("detalhes").innerHTML =
+            "<div class='alert alert-danger'>Cliente não encontrado</div>";
+        return;
+    }
 
     document.getElementById("detalhes").innerHTML = `
-        <p><b>Nome:</b> ${f.nome}</p>
-        <p><b>CPF:</b> ${f.cpf}</p>
-        <p><b>Telefone:</b> ${f.telefone}</p>
-        <p><b>Endereço:</b> ${f.endereco}</p>
-
+        <p><b>Nome:</b> ${c.nome}</p>
+        <p><b>CPF:</b> ${c.cpf}</p>
+        <p><b>Telefone:</b> ${c.telefone}</p>
+        <p><b>Endereço:</b> ${c.endereco}</p>
     `;
+
 }

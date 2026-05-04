@@ -2,63 +2,53 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Pesquisar CLiente</title>
+    <title>Pesquisar Cliente</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
 
-<h2>Pesquisar Cliente</h2>
+<body class="bg-light d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+       <a href="index.html" class="navbar-brand">
+    Distribuidora Rocha
+</a>
 
-<input type="text" id="busca" placeholder="Digite nome ou CPF">
-<button onclick="pesquisar()">Buscar</button>
+        <div>
+            <a href="CadastrarCliente.html" class="btn btn-outline-light btn-sm">Cadastrar</a>
+            <a href="PesquisarCliente.html" class="btn btn-outline-light btn-sm">Pesquisar</a>
+                <a href="EditarCliente.html" class="btn btn-outline-light btn-sm">Editar</a>
+            <a href="ExcluirCliente.html" class="btn btn-outline-light btn-sm">Excluir</a>
+        </div>
+    </div>
+</nav>
 
-<h3>Resultados:</h3>
-<ul id="lista"></ul>
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h3>Pesquisar Cliente</h3>
+<div class="input-group mb-3">
+    <input type="text" id="busca" class="form-control" placeholder="Digite nome ou CPF">
+    <button class="btn btn-primary" onclick="pesquisar()">Buscar</button>
+</div>
 
-<h3>Detalhes:</h3>
-<div id="detalhes"></div>
 
-<script>
-let clientes = [];
+<h4>Resultados:</h4>
+<ul id="lista" class="list-group"></ul>
 
-function pesquisar() {
-    const termo = document.getElementById("busca").value.toLowerCase();
+<h4 class="mt-4">Detalhes:</h4>
+<div id="detalhes" class="border p-3"></div>
+</div>
+</div>
 
-    fetch("http://localhost:8080/clientes")
-    .then(res => res.json())
-    .then(data => {
-        clientes = data;
-
-        const filtrados = clientes.filter(c =>
-            c.nome.toLowerCase().includes(termo) ||
-            c.cpf.includes(termo)
-        );
-
-        const lista = document.getElementById("lista");
-        lista.innerHTML = "";
-
-        filtrados.forEach(c => {
-            const item = `<li onclick="mostrarDetalhes(${c.id})">
-                ${c.nome} - ${c.cpf}
-            </li>`;
-            lista.innerHTML += item;
-        });
-    });
-}
-
-function mostrarDetalhes(id) {
-    const c = clientes.find(c => c.id === id);
-
-    document.getElementById("detalhes").innerHTML = `
-        <p><b>Nome:</b> ${c.nome}</p>
-        <p><b>CPF:</b> ${c.cpf}</p>
-        <p><b>Telefone:</b> ${c.telefone}</p>
-        <p><b>Endereço:</b> ${c.endereco}</p>
-
-    `;
-}
-</script>
-
-<script src="PesquisarCliente.html"></script>
+ <!-- Rodapé -->
+<footer class="bg-dark text-light text-center mt-auto">
+    <div class="container py-3">
+        <small>© 2026 Distribuidora Rocha</small>
+    </div>
+</footer>
+<!-- JS correto -->
+<script src="../static/PesquisarCliente.js"></script>
 
 </body>
 </html>

@@ -22,10 +22,13 @@ document.getElementById("formCliente").addEventListener("submit", function(e) {
         return response.json();
     })
     .then(data => {
-        document.getElementById("mensagem").innerText = "Cliente cadastrado com sucesso!";
+        document.getElementById("mensagem").innerHTML =
+            "<div class='alert alert-success'>Cliente cadastrado com sucesso!</div>";
+
         document.getElementById("formCliente").reset();
     })
     .catch(error => {
-        document.getElementById("mensagem").innerText = error.message;
+        document.getElementById("mensagem").innerHTML =
+            "<div class='alert alert-danger'>Erro ao cadastrar cliente!</div>";
     });
 });
