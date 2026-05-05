@@ -3,39 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastrar Fornecedor</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
 
-    <h2>Cadastrar Fornecedor</h2>
+<body class="bg-light d-flex flex-column min-vh-100">
 
-    <form id="formFornecedor">
-        <label>Nome:</label><br>
-        <input type="text" id="nome" required><br><br>
+<!-- MENU -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
 
-        <label>CNPJ:</label><br>
-        <input type="text" id="cnpj" required><br><br>
+    <a href="../../ModuloCliente/templates/index.html" class="navbar-brand">
+    Distribuidora Rocha
+</a>
 
-        <label>Telefone:</label><br>
-        <input type="text" id="telefone" required><br><br>
+        <div>
+            <a href="CadastrarFornecedor.html" class="btn btn-outline-light btn-sm">Cadastrar</a>
+            <a href="PesquisarFornecedor.html" class="btn btn-outline-light btn-sm">Pesquisar</a>
+            <a href="EditarFornecedor.html" class="btn btn-outline-light btn-sm">Editar</a>
+            <a href="ExcluirFornecedor.html" class="btn btn-outline-light btn-sm">Excluir</a>
+        </div>
 
-        <label>Endereco:</label><br>
-        <input type="text" id="endereco" required><br><br>
+    </div>
+</nav>
 
-        <label>Cidade:</label><br>
-        <input type="text" id="cidade" required><br><br>
+<!-- CONTEÚDO -->
+<div class="container mt-5 flex-grow-1 mb-2">
+    <div class="card shadow p-4">
 
-        <label>ProdutoFornecidoA:</label><br>
-        <input type="text" id="produtoFornecidoA" required><br><br>
+        <h3 class="text-center mb-4">Cadastrar Fornecedor</h3>
 
-        <label>ProdutoFornecidoB:</label><br>
-        <input type="text" id="produtoFornecidoB" required><br><br>
+        <form id="formFornecedor">
 
-        <button type="submit">Cadastrar</button>
-    </form>
+            <div class="mb-3">
+                <label class="form-label">Nome</label>
+                <input type="text" id="nome" class="form-control" required>
+            </div>
 
-    <p id="mensagem"></p>
+            <div class="mb-3">
+                <label class="form-label">CNPJ</label>
+                <input type="text" id="cnpj" class="form-control" required placeholder="Digite somente números">
+            </div>
 
-    <script src="CadastrarFornecedor.js"></script>
+            <div class="mb-3">
+                <label class="form-label">Telefone</label>
+                <input type="text" id="telefone" class="form-control" required placeholder="Digite somente números">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Endereço</label>
+                <input type="text" id="endereco" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Cidade</label>
+                <input type="text" id="cidade" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Produto Fornecido A</label>
+                <input type="text" id="produtoFornecidoA" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Produto Fornecido B</label>
+                <input type="text" id="produtoFornecidoB" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Cadastrar
+            </button>
+
+        </form>
+
+        <div id="mensagem" class="mt-3"></div>
+
+    </div>
+</div>
+
+<!-- RODAPÉ -->
+<footer class="bg-dark text-light text-center mt-auto">
+    <div class="container py-3">
+        <small>© 2026 Distribuidora Rocha</small>
+    </div>
+</footer>
+
+<!-- JS -->
+<script src="../static/CadastrarFornecedor.js"></script>
 
 </body>
 </html>

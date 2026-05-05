@@ -3,64 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>Pesquisar Fornecedor</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
 
-<h2>Pesquisar Fornecedor</h2>
+<body class="bg-light d-flex flex-column min-vh-100">
 
-<input type="text" id="busca" placeholder="Digite nome ou CNPJ">
-<button onclick="pesquisar()">Buscar</button>
+<!-- MENU -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
 
-<h3>Resultados:</h3>
-<ul id="lista"></ul>
+      <a href="../../ModuloCliente/templates/index.html" class="navbar-brand">
+    Distribuidora Rocha
+</a>
 
-<h3>Detalhes:</h3>
-<div id="detalhes"></div>
+        <div>
+            <a href="CadastrarFornecedor.html" class="btn btn-outline-light btn-sm">Cadastrar</a>
+            <a href="PesquisarFornecedor.html" class="btn btn-outline-light btn-sm">Pesquisar</a>
+            <a href="EditarFornecedor.html" class="btn btn-outline-light btn-sm">Editar</a>
+            <a href="ExcluirFornecedor.html" class="btn btn-outline-light btn-sm">Excluir</a>
+        </div>
 
-<script>
-let fornecedores = [];
+    </div>
+</nav>
 
-function pesquisar() {
-    const termo = document.getElementById("busca").value.toLowerCase();
+<!-- CONTEÚDO -->
+<div class="container mt-4 flex-grow-1">
 
-    fetch("http://localhost:8080/fornecedores")
-    .then(res => res.json())
-    .then(data => {
-        fornecedores = data;
+    <div class="card shadow p-4">
 
-        const filtrados = fornecedores.filter(f =>
-            f.nome.toLowerCase().includes(termo) ||
-            f.cnpj.includes(termo)
-        );
+        <h4 class="mb-3">Pesquisar Fornecedor</h4>
 
-        const lista = document.getElementById("lista");
-        lista.innerHTML = "";
+        <div class="input-group mb-3">
+            <input type="text" id="busca" class="form-control" placeholder="Digite nome ou CNPJ">
+            <button class="btn btn-primary" onclick="pesquisar()">Buscar</button>
+        </div>
 
-        filtrados.forEach(f => {
-            const item = `<li onclick="mostrarDetalhes(${f.id})">
-                ${f.nome} - ${f.cnpj}
-            </li>`;
-            lista.innerHTML += item;
-        });
-    });
-}
+        <h5>Resultados:</h5>
+        <ul id="lista" class="list-group mb-3"></ul>
 
-function mostrarDetalhes(id) {
-    const f = fornecedores.find(f => f.id === id);
+        <h5>Detalhes:</h5>
+        <div id="detalhes" class="border p-3 bg-white"></div>
 
-    document.getElementById("detalhes").innerHTML = `
-        <p><b>Nome:</b> ${f.nome}</p>
-        <p><b>CNPJ:</b> ${f.cnpj}</p>
-        <p><b>Telefone:</b> ${f.telefone}</p>
-        <p><b>Endereço:</b> ${f.endereco}</p>
-        <p><b>Cidade:</b> ${f.cidade}</p>
-        <p><b>Produto Fornecido A:</b> ${f.produtoFornecidoA}</p>
-        <p><b>Produto Fornecido B:</b> ${f.produtoFornecidoB}</p>
-    `;
-}
-</script>
+    </div>
 
-<script src="PesquisarFornecedor.js"></script>
+</div>
+
+<!-- RODAPÉ -->
+<footer class="bg-dark text-light text-center mt-auto">
+    <div class="container py-3">
+        <small>© 2026 Distribuidora Rocha</small>
+    </div>
+</footer>
+
+<!-- JS -->
+<script src="../static/PesquisarFornecedor.js"></script>
 
 </body>
 </html>

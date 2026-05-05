@@ -18,8 +18,10 @@ function pesquisar() {
 
         filtrados.forEach(f => {
             const li = document.createElement("li");
+            li.className = "list-group-item list-group-item-action";
             li.textContent = `${f.nome} - ${f.cnpj}`;
             li.onclick = () => mostrarDetalhes(f.id);
+
             lista.appendChild(li);
         });
     });
@@ -34,7 +36,7 @@ function mostrarDetalhes(id) {
         <p><b>Telefone:</b> ${f.telefone}</p>
         <p><b>Endereço:</b> ${f.endereco}</p>
         <p><b>Cidade:</b> ${f.cidade}</p>
-        <p><b>Produto Fornecido A:</b> ${f.produtoFornecidoA}</p>
-        <p><b>Produto Fornecido B:</b> ${f.produtoFornecidoB}</p>
+        <p><b>Produto A:</b> ${f.produtoFornecidoA}</p>
+        <p><b>Produto B:</b> ${f.produtoFornecidoB}</p>
     `;
 }
