@@ -1,69 +1,61 @@
-document.getElementById("formCliente").addEventListener("submit", function(e) {
+const API = "http://localhost:8080";
+
+document.getElementById("formCliente").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const nome = document.getElementById("nome").value.trim();
-    const cpf = document.getElementById("cpf").value.trim();
+    const nome     = document.getElementById("nome").value.trim();
+    const cpf      = document.getElementById("cpf").value.trim();
     const telefone = document.getElementById("telefone").value.trim();
     const endereco = document.getElementById("endereco").value.trim();
 
-    // 🔴 1. Campos obrigatórios
+    // 1. Campos obrigatórios
     if (!nome || !cpf || !telefone || !endereco) {
         mostrarMsg("Preencha todos os campos obrigatórios!", "warning");
         return;
     }
 
-    // 🔴 2. Validar telefone (só números)
-    const telefoneValido = /^[0-9]+$/.test(telefone);
-    if (!telefoneValido) {
-        mostrarMsg("Caracteres inválidos no telefone!", "danger");
+    // 2. Validar telefone (só números)
+    if (!/^[0-9]+$/.test(telefone)) {
+        mostrarMsg("Telefone deve conter somente números!", "danger");
         return;
     }
 
-    // 🔴 3. Validar CPF/CNPJ (só números)
-    const cpfValido = /^[0-9]+$/.test(cpf);
-    if (!cpfValido) {
-        mostrarMsg("Caracteres inválidos no CPF/CNPJ!", "danger");
+    // 3. Validar CPF (só números)
+    if (!/^[0-9]+$/.test(cpf)) {
+        mostrarMsg("CPF deve conter somente números!", "danger");
         return;
     }
 
     const cliente = { nome, cpf, telefone, endereco };
 
-    // 🔎 4. Verificar duplicado (simples)
-    fetch("http://localhost:8080/clientes")
-    .then(res => res.json())
-    .then(lista => {
+    // 4. Tenta cadastrar direto — a API rejeita se o CPF já existir (conflito)
+    cadastrar(cliente);
+});
 
-        const existe = lista.some(c => c.cpf === cpf);
-
-        if (existe) {
-            mostrarMsg("Já existe um cliente com esse CPF!", "warning");
-            return;
-        }
-
-        // ✅ 5. Cadastrar
-        fetch("http://localhost:8080/clientes", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(cliente)
-        })
+function cadastrar(cliente) {
+    fetch(`${API}/clientes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cliente)
+    })
         .then(res => {
+            if (res.status === 409) {
+                mostrarMsg("Já existe um cliente com esse CPF!", "warning");
+                return null;
+            }
             if (!res.ok) throw new Error("Erro ao cadastrar");
             return res.json();
         })
-        .then(() => {
-            mostrarMsg("Cliente registrado com sucesso!", "success");
+        .then(data => {
+            if (!data) return;
+            mostrarMsg("Cliente cadastrado com sucesso!", "success");
             document.getElementById("formCliente").reset();
         })
         .catch(() => {
-            mostrarMsg("Erro ao cadastrar", "danger");
+            mostrarMsg("Erro ao cadastrar cliente. Verifique se o servidor está rodando.", "danger");
         });
+}
 
-    });
-});
-
-// 💬 Função de mensagem padrão
 function mostrarMsg(texto, tipo) {
     document.getElementById("mensagem").innerHTML =
         `<div class="alert alert-${tipo}">${texto}</div>`;
