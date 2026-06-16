@@ -1,4 +1,6 @@
-document.getElementById("formFornecedor").addEventListener("submit", function(e) {
+const API = "http://localhost:8080";
+
+document.getElementById("formFornecedor").addEventListener("submit", function (e) {
     e.preventDefault();
 
     const nome     = document.getElementById("nome").value.trim();
@@ -9,64 +11,54 @@ document.getElementById("formFornecedor").addEventListener("submit", function(e)
     const produtoA = document.getElementById("produtoFornecidoA").value.trim();
     const produtoB = document.getElementById("produtoFornecidoB").value.trim();
 
-    // 🔴 1. Campos obrigatórios (produtoB é opcional)
+    // 1. Campos obrigatórios (produtoB é opcional)
     if (!nome || !cnpj || !telefone || !endereco || !cidade || !produtoA) {
         mostrarMsg("Preencha todos os campos obrigatórios!", "warning");
         return;
     }
 
-    // 🔴 2. Validar telefone (só números)
-    const telefoneValido = /^[0-9]+$/.test(telefone);
-    if (!telefoneValido) {
-        mostrarMsg("Caracteres inválidos inseridos no Número de Telefone!", "danger");
+    // 2. Validar telefone (só números)
+    if (!/^[0-9]+$/.test(telefone)) {
+        mostrarMsg("Telefone deve conter somente números!", "danger");
         return;
     }
 
-    // 🔴 3. Validar CNPJ (só números)
-    const cnpjValido = /^[0-9]+$/.test(cnpj);
-    if (!cnpjValido) {
-        mostrarMsg("Caracteres inválidos inseridos no CNPJ!", "danger");
+    // 3. Validar CNPJ (só números)
+    if (!/^[0-9]+$/.test(cnpj)) {
+        mostrarMsg("CNPJ deve conter somente números!", "danger");
         return;
     }
 
     const fornecedor = { nome, cnpj, telefone, endereco, cidade, produtoFornecidoA: produtoA, produtoFornecidoB: produtoB };
 
-    // 🔎 4. Verificar duplicado
-    fetch("http://localhost:8080/fornecedores")
-    .then(res => res.json())
-    .then(lista => {
+    // 4. Tenta cadastrar direto — a API rejeita se o CNPJ já existir
+    cadastrar(fornecedor);
+});
 
-        const existe = lista.some(f => f.cnpj === cnpj);
-
-        if (existe) {
-            mostrarMsg("Já existe um fornecedor cadastrado com essas informações!", "warning");
-            return;
-        }
-
-        // ✅ 5. Cadastrar
-        fetch("http://localhost:8080/fornecedores", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(fornecedor)
-        })
+function cadastrar(fornecedor) {
+    fetch(`${API}/fornecedores`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fornecedor)
+    })
         .then(res => {
+            if (res.status === 409) {
+                mostrarMsg("Já existe um fornecedor com esse CNPJ!", "warning");
+                return null;
+            }
             if (!res.ok) throw new Error("Erro ao cadastrar");
             return res.json();
         })
-        .then(() => {
-            mostrarMsg("Fornecedor Registrado com Sucesso!", "success");
+        .then(data => {
+            if (!data) return;
+            mostrarMsg("Fornecedor cadastrado com sucesso!", "success");
             document.getElementById("formFornecedor").reset();
         })
         .catch(() => {
-            mostrarMsg("Erro ao cadastrar fornecedor!", "danger");
+            mostrarMsg("Erro ao cadastrar fornecedor. Verifique se o servidor está rodando.", "danger");
         });
+}
 
-    });
-});
-
-// 💬 Função de mensagem padrão
 function mostrarMsg(texto, tipo) {
     document.getElementById("mensagem").innerHTML =
         `<div class="alert alert-${tipo}">${texto}</div>`;

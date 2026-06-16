@@ -2,63 +2,167 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Pesquisar Fornecedor</title>
-
-    <!-- Bootstrap -->
+    <title>Fornecedores</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
 <body class="bg-light d-flex flex-column min-vh-100">
 
-<!-- MENU -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-
-      <a href="../../ModuloCliente/templates/index.html" class="navbar-brand">
-    Distribuidora Rocha
-</a>
-
+        <a href="../../ModuloCliente/templates/index.html" class="navbar-brand fw-bold">Distribuidora Rocha</a>
         <div>
-            <a href="CadastrarFornecedor.html" class="btn btn-outline-light btn-sm">Cadastrar</a>
-            <a href="PesquisarFornecedor.html" class="btn btn-outline-light btn-sm">Pesquisar</a>
-            <a href="EditarFornecedor.html" class="btn btn-outline-light btn-sm">Editar</a>
-            <a href="ExcluirFornecedor.html" class="btn btn-outline-light btn-sm">Excluir</a>
+            <a href="PesquisarFornecedor.html" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-search me-1"></i>Fornecedores
+            </a>
+            <a href="CadastrarFornecedor.html" class="btn btn-light btn-sm ms-1">
+                <i class="bi bi-building-add me-1"></i>Novo Fornecedor
+            </a>
         </div>
-
     </div>
 </nav>
 
-<!-- CONTEÚDO -->
-<div class="container mt-4 flex-grow-1">
-
+<div class="container mt-5">
     <div class="card shadow p-4">
 
-        <h4 class="mb-3">Pesquisar Fornecedor</h4>
-
-        <div class="input-group mb-3">
-            <input type="text" id="busca" class="form-control" placeholder="Digite nome ou CNPJ">
-            <button class="btn btn-primary" onclick="pesquisar()">Buscar</button>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">
+                <i class="bi bi-building text-success me-2"></i>Fornecedores
+            </h3>
         </div>
 
-        <h5>Resultados:</h5>
-        <ul id="lista" class="list-group mb-3"></ul>
+        <!-- Busca por CNPJ -->
+        <div class="input-group mb-4">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" id="campoBusca" class="form-control" placeholder="Buscar por CNPJ (somente números)...">
+            <button class="btn btn-outline-secondary" onclick="carregarTodos()">
+                <i class="bi bi-x-circle"></i> Limpar
+            </button>
+        </div>
 
-        <h5>Detalhes:</h5>
-        <div id="detalhes" class="border p-3 bg-white"></div>
+        <div id="mensagem" class="mb-3"></div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Nome</th>
+                        <th>CNPJ</th>
+                        <th>Telefone</th>
+                        <th>Cidade</th>
+                        <th>Produto A</th>
+                        <th>Produto B</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaFornecedores">
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-hourglass-split me-2"></i>Carregando fornecedores...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </div>
-
 </div>
 
-<!-- RODAPÉ -->
+<!-- Modal de Editar -->
+<div class="modal fade" id="modalEditar" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar Fornecedor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditar">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">CNPJ <span class="text-muted small">(não editável)</span></label>
+                        <input type="text" id="editCnpj" class="form-control bg-light" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nome</label>
+                        <input type="text" id="editNome" class="form-control" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Telefone</label>
+                            <input type="text" id="editTelefone" class="form-control" required placeholder="Somente números">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Cidade</label>
+                            <input type="text" id="editCidade" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Endereço</label>
+                        <input type="text" id="editEndereco" class="form-control" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Produto A</label>
+                            <input type="text" id="editProdutoA" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Produto B <span class="text-muted small">(opcional)</span></label>
+                            <input type="text" id="editProdutoB" class="form-control">
+                        </div>
+                    </div>
+
+                    <div id="mensagemEditar" class="mb-2"></div>
+
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary w-50" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning w-50">
+                            <i class="bi bi-check-circle me-1"></i>Salvar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmar Exclusão -->
+<div class="modal fade" id="modalExcluir" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Excluir</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p class="mb-1">Tem certeza que deseja excluir o fornecedor:</p>
+                <strong id="nomeExcluir" class="d-block mb-1 text-danger"></strong>
+                <span class="text-muted small" id="cnpjExcluir"></span>
+                <p class="mt-2 text-muted small">Essa ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer d-flex gap-2">
+                <button type="button" class="btn btn-outline-secondary w-50" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger w-50" id="btnConfirmarExclusao">
+                    <i class="bi bi-trash me-1"></i>Excluir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <footer class="bg-dark text-light text-center mt-auto">
     <div class="container py-3">
         <small>© 2026 Distribuidora Rocha</small>
     </div>
 </footer>
 
-<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../static/PesquisarFornecedor.js"></script>
-
 </body>
 </html>
